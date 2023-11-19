@@ -17,15 +17,15 @@ const UserCard = ({ user }: { user: UserInterface }) => {
     <div className="card">
       <div className="card-border-top"></div>
       <div className="img">
-        {user.gender === "male" ? (
-          <MaleRoundedIcon sx={{ color: "blue" }} />
-        ) : (
+        {user.gender === "Male" ? (
+          <FemaleRoundedIcon sx={{ color: "blue" }} className="gender male" />
+          ) : (
           <FemaleRoundedIcon sx={{ color: "pink" }} className="gender female" />
         )}
         <img src={user.avatar} alt="avatar" />
       </div>
       <span> {user.first_name + " " + user.last_name}</span>
-      <p className="email"> {user.email}</p>
+      <p className="email"> {user.domain}</p>
       <button> Click</button>
     </div>
   );

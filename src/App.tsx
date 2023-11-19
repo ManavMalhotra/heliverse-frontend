@@ -4,6 +4,8 @@ import store from "./store";
 import { useGetUsersQuery } from "./api";
 import UserCard from "./components/UserCard";
 import { useState } from "react";
+import { Box, CircularProgress, Container, TextField } from "@mui/material";
+import { Search } from "@mui/icons-material";
 
 interface UserInterface {
   _id: number;
@@ -14,6 +16,22 @@ interface UserInterface {
   first_name: string;
   gender: string;
   last_name: string;
+}
+
+function SearchBox({ setSearchQuery }: { setSearchQuery: Function }) {
+  return (
+    <Box sx={{ display: "flex", alignItems: "flex-end" }}>
+      <Search sx={{ color: "action.active", mr: 1, my: 0.5 }} />
+      <TextField
+        id="input-with-sx"
+        label="With sx"
+        variant="standard"
+        onInput={(e) => {
+          setSearchQuery((e.target as HTMLInputElement).value);
+        }}
+      />
+    </Box>
+  );
 }
 
 function Users() {
@@ -32,7 +50,18 @@ function Users() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <Container
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />;
+      </Container>
+    );
   }
 
   return (
@@ -52,6 +81,18 @@ function Users() {
 }
 
 function App() {
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filterData = (query: string, data: UserInterface[]) => {
+    if (!query) {
+      return data;
+    } else {
+      return data.filter((d) => d.first_name.toLowerCase().includes(query));
+    }
+  };
+
+
   return (
     <Provider store={store}>
       <Users />

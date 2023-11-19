@@ -6,10 +6,17 @@ export const userApi = createApi({
   tagTypes: ["User"],
   endpoints: (builder) => ({
     getUsers: builder.query({
-      query: (params) => (`users?page=${parseInt(params.page)}`),
+      query: (params) => `users?page=${parseInt(params.page)}`,
       providesTags: ["User"],
     }),
-    // Define other endpoints for CRUD operations
+    getUserById: builder.query({
+      query: (id) => `users/${id}`,
+      providesTags: ["User"],
+    }),
+    searchUsers: builder.query({
+      query: (query) => `users/search?query=${query}`,
+      providesTags: ["User"],
+    }),
   }),
 });
 
