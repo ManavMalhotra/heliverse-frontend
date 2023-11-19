@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const userApi = createApi({
   reducerPath: "userApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3001/api" }), // Replace '/api' with your API base URL
+  baseQuery: fetchBaseQuery({ baseUrl: "https://heliverse-backend-yjd8.onrender.com/api" }), // Replace '/api' with your API base URL
   tagTypes: ["User"],
   endpoints: (builder) => ({
     getUsers: builder.query({
