@@ -18,7 +18,7 @@ const UserCard = ({ user }: { user: UserInterface }) => {
       <div className="card-border-top"></div>
       <div className="img">
         {user.gender === "Male" ? (
-          <FemaleRoundedIcon sx={{ color: "blue" }} className="gender male" />
+          <MaleRoundedIcon sx={{ color: "blue" }} className="gender male" />
           ) : (
           <FemaleRoundedIcon sx={{ color: "pink" }} className="gender female" />
         )}

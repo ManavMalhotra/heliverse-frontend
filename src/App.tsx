@@ -1,3 +1,4 @@
+
 import { Provider } from "react-redux";
 import "./App.css";
 import store from "./store";
@@ -18,6 +19,7 @@ interface UserInterface {
   last_name: string;
 }
 
+// @ts-ignore
 function SearchBox({ setSearchQuery }: { setSearchQuery: Function }) {
   return (
     <Box sx={{ display: "flex", alignItems: "flex-end" }}>
@@ -81,9 +83,9 @@ function Users() {
 }
 
 function App() {
-
+// @ts-ignore
   const [searchQuery, setSearchQuery] = useState("");
-
+// @ts-ignore
   const filterData = (query: string, data: UserInterface[]) => {
     if (!query) {
       return data;
