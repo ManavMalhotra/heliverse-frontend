@@ -1,12 +1,12 @@
-
 import { Provider } from "react-redux";
 import "./App.css";
 import store from "./store";
-import { useGetUsersQuery } from "./api";
+import { useGetUsersQuery, useSearchUsersQuery } from "./api";
 import UserCard from "./components/UserCard";
-import { useState } from "react";
-import { Box, CircularProgress, Container, TextField } from "@mui/material";
-import { Search } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import { Box, CircularProgress, Container, IconButton } from "@mui/material";
+import SearchBox from "./components/SearchBox";
+import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 
 interface UserInterface {
   _id: number;
@@ -19,28 +19,29 @@ interface UserInterface {
   last_name: string;
 }
 
-// @ts-ignore
-function SearchBox({ setSearchQuery }: { setSearchQuery: Function }) {
-  return (
-    <Box sx={{ display: "flex", alignItems: "flex-end" }}>
-      <Search sx={{ color: "action.active", mr: 1, my: 0.5 }} />
-      <TextField
-        id="input-with-sx"
-        label="With sx"
-        variant="standard"
-        onInput={(e) => {
-          setSearchQuery((e.target as HTMLInputElement).value);
-        }}
-      />
-    </Box>
-  );
-}
-
 function Users() {
   const [params, setParams] = useState({ page: 1 });
-  const { data, error, isLoading } = useGetUsersQuery(params);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  console.log(data, error, isLoading);
+  const { data, error, isLoading } = useGetUsersQuery(params);
+  const {
+    data: searchData,
+    error: searchError,
+    isLoading: searchIsLoading,
+  } = useSearchUsersQuery({
+    query: searchQuery,
+  });
+
+  const [userData, setUserData] = useState<UserInterface[]>([]);
+
+  useEffect(() => {
+    if (!searchQuery) {
+      setUserData(data);
+    }
+    if (searchQuery) {
+      setUserData(searchData);
+    }
+  }, [data, searchData]);
 
   const handleNext = () => {
     setParams({ page: params.page + 1 });
@@ -51,7 +52,7 @@ function Users() {
     setParams({ page: params.page - 1 });
   };
 
-  if (isLoading) {
+  if (isLoading || searchIsLoading) {
     return (
       <Container
         sx={{
@@ -66,35 +67,32 @@ function Users() {
     );
   }
 
+  if (error) {
+    return <h1>Error</h1>;
+  }
+
   return (
     <>
+      <SearchBox serachQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <div className="container">
-        {data?.map((user: UserInterface) => (
+        {userData?.map((user: UserInterface) => (
           <UserCard key={user._id} user={user} />
         ))}
       </div>
-      <div>
-        <button onClick={handlePrev}>Prev</button>
-        <h2>{params.page}</h2>
-        <button onClick={handleNext}>Next</button>
-      </div>
+      <Box>
+        <IconButton aria-label="delete" size="large" onClick={handlePrev}>
+          <ArrowBackIos fontSize="inherit" />
+        </IconButton>
+        {params.page}
+        <IconButton aria-label="delete" size="large" onClick={handleNext}>
+          <ArrowForwardIos fontSize="inherit" />
+        </IconButton>
+      </Box>
     </>
   );
 }
 
 function App() {
-// @ts-ignore
-  const [searchQuery, setSearchQuery] = useState("");
-// @ts-ignore
-  const filterData = (query: string, data: UserInterface[]) => {
-    if (!query) {
-      return data;
-    } else {
-      return data.filter((d) => d.first_name.toLowerCase().includes(query));
-    }
-  };
-
-
   return (
     <Provider store={store}>
       <Users />
