@@ -27,17 +27,15 @@ function Users() {
   const [gender, setGender] = useState("");
 
   const { data, error, isLoading } = useGetUsersQuery(params);
-  const {
-    data: searchData,
-    error: searchError,
-    isLoading: searchIsLoading,
-  } = useSearchUsersQuery({
+  // @ts-ignore
+  const {data: searchData,error: searchError,isLoading: searchIsLoading,} = useSearchUsersQuery({
     query: searchQuery,
   });
 
   console.log(data);
 
   const [userData, setUserData] = useState<UserInterface[]>([]);
+  // @ts-ignore
   const [filteredData, setFilteredData] = useState<UserInterface[]>([]);
 
   useEffect(() => {
@@ -109,7 +107,7 @@ function Users() {
       />
 
       {/* Gender Filter  */}
-      <Filter 
+      <Filter
         name="Gender"
         option={gender}
         selectOption={setGender}
