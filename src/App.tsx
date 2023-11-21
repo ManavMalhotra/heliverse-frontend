@@ -4,9 +4,10 @@ import store from "./store";
 import { useGetUsersQuery, useSearchUsersQuery } from "./api";
 import UserCard from "./components/UserCard";
 import { useEffect, useState } from "react";
-import { Box, CircularProgress, Container, IconButton } from "@mui/material";
+import { Button, CircularProgress, Container, IconButton } from "@mui/material";
 import SearchBox from "./components/SearchBox";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
+import { Filter } from "./components/Filter";
 
 interface UserInterface {
   _id: number;
@@ -22,6 +23,8 @@ interface UserInterface {
 function Users() {
   const [params, setParams] = useState({ page: 1 });
   const [searchQuery, setSearchQuery] = useState("");
+  const [domain, setDomain] = useState("");
+  const [gender, setGender] = useState("");
 
   const { data, error, isLoading } = useGetUsersQuery(params);
   const {
@@ -32,7 +35,10 @@ function Users() {
     query: searchQuery,
   });
 
+  console.log(data);
+
   const [userData, setUserData] = useState<UserInterface[]>([]);
+  const [filteredData, setFilteredData] = useState<UserInterface[]>([]);
 
   useEffect(() => {
     if (!searchQuery) {
@@ -71,23 +77,74 @@ function Users() {
     return <h1>Error</h1>;
   }
 
+  const handleFilter = () => {
+    const filteredData = userData?.filter((user: UserInterface) => {
+      // on the bases of DOMAIN, Gender
+      if (!domain) {
+        return user.gender === gender;
+      }
+      if (!gender) {
+        return user.domain === domain;
+      } else {
+        return user.gender === gender && user.domain === domain;
+      }
+    });
+    setFilteredData(filteredData);
+    console.log(filteredData);
+  };
+
   return (
     <>
-      <SearchBox serachQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <SearchBox searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      {/*  Domain Filter */}
+      <Filter
+        name={"Domain"}
+        option={domain}
+        selectOption={setDomain}
+        optionList={
+          userData
+            ?.map((user: UserInterface) => user.domain)
+            .filter((value, index, self) => self.indexOf(value) === index) || []
+        }
+      />
+
+      {/* Gender Filter  */}
+      <Filter 
+        name="Gender"
+        option={gender}
+        selectOption={setGender}
+        optionList={
+          userData
+            ?.map((user: UserInterface) => user.gender)
+            .filter((value, index, self) => self.indexOf(value) === index) || []
+        }
+      />
+
+      {/* // filter button  */}
+      <Button variant="contained" onClick={handleFilter}>
+        Filter
+      </Button>
+
       <div className="container">
         {userData?.map((user: UserInterface) => (
           <UserCard key={user._id} user={user} />
         ))}
       </div>
-      <Box>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <IconButton aria-label="delete" size="large" onClick={handlePrev}>
           <ArrowBackIos fontSize="inherit" />
         </IconButton>
-        {params.page}
+        <h1>{params.page}</h1>
         <IconButton aria-label="delete" size="large" onClick={handleNext}>
           <ArrowForwardIos fontSize="inherit" />
         </IconButton>
-      </Box>
+      </div>
     </>
   );
 }

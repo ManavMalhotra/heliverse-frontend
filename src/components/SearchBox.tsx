@@ -5,7 +5,7 @@ function SearchBox({
   searchQuery,
   setSearchQuery,
 }: {
-  serachQuery: string;
+  searchQuery: string;
   setSearchQuery: Function;
 }) {
   return (
@@ -17,7 +17,7 @@ function SearchBox({
         onInput={(e) => {
           // set time after 2 seconds
           setTimeout(() => {
-            setSearchQuery(e.target.value);
+            setSearchQuery((e.target as HTMLInputElement).value);
           }, 2000);
         }}
         value={searchQuery}

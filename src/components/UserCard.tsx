@@ -1,6 +1,7 @@
 import "./UserCard.css";
 import MaleRoundedIcon from "@mui/icons-material/MaleRounded";
 import FemaleRoundedIcon from "@mui/icons-material/FemaleRounded";
+import { TransgenderRounded } from "@mui/icons-material";
 
 interface UserInterface {
   available: boolean;
@@ -19,9 +20,14 @@ const UserCard = ({ user }: { user: UserInterface }) => {
       <div className="img">
         {user.gender === "Male" ? (
           <MaleRoundedIcon sx={{ color: "blue" }} className="gender male" />
-          ) : (
+        ) : user.gender === "Female" ? (
           <FemaleRoundedIcon sx={{ color: "pink" }} className="gender female" />
-        )}
+        ) : (
+          <TransgenderRounded
+            sx={{ color: "purple" }}
+            className="gender transgender"
+          />
+        )}{" "}
         <img src={user.avatar} alt="avatar" />
       </div>
       <span> {user.first_name + " " + user.last_name}</span>
